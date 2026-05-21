@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#C9A84C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="مكتب المحامي">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>مكتب المحاماة الاحترافي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#C9A84C; --gold2:#E8C97A; --gold3:rgba(201,168,76,0.12);
+  --dark:#0A0E17; --dark2:#0F1420; --panel:#141926; --panel2:#1A2133; --panel3:#1F2840;
+  --border:rgba(201,168,76,0.15); --border2:rgba(201,168,76,0.25);
+  --text:#EDE8DC; --text2:#B0A898; --muted:#6B6355;
+  --green:#3DB87A; --red:#C9504C; --blue:#4C7EC9; --purple:#8B5CF6;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--dark)}
+body{font-family:'Tajawal',sans-serif;color:var(--text);direction:rtl;position:fixed;width:100%;height:100%}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;height:100%;position:absolute;width:100%;top:0;right:0;background:var(--dark);transition:transform .3s ease;transform:translateX(100%)}
+.screen.active{display:flex;transform:translateX(0)}
+.screen.home-screen{transform:translateX(0)}
+
+/* TOPBAR */
+.topbar{padding:calc(var(--safe-top) + 14px) 16px 14px;background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative}
+.tb-back{background:var(--panel2);border:1px solid var(--border);border-radius:9px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:var(--gold);flex-shrink:0}
+.tb-title{flex:1}
+.tb-title h1{font-family:'Amiri',serif;font-size:19px;color:var(--gold2);line-height:1.2}
+.tb-title p{font-size:11px;color:var(--muted);margin-top:1px}
+.tb-action{background:linear-gradient(135deg,var(--gold),#8B6914);border:none;border-radius:9px;padding:7px 14px;color:#0A0E17;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.scroll::-webkit-scrollbar{display:none}
+
+/* HOME HEADER */
+.home-hdr{padding:calc(var(--safe-top)+18px) 18px 18px;background:linear-gradient(180deg,#0c1120 0%,var(--dark) 100%);flex-shrink:0}
+.office-brand{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.brand-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--gold),#7A5A10);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.brand-name{font-family:'Amiri',serif;font-size:22px;color:var(--gold);line-height:1.1}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.date-badge{margin-right:auto;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:6px 12px;text-align:center}
+.date-badge .dn{font-size:13px;font-weight:700;color:var(--gold2)}
+.date-badge .dd{font-size:10px;color:var(--muted)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:2px}
+.stat-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center}
+.stat-card .sn{font-size:24px;font-weight:900;line-height:1}
+.stat-card .sl{font-size:10px;color:var(--muted);margin-top:3px}
+.sn.gold{color:var(--gold)} .sn.green{color:var(--green)} .sn.blue{color:var(--blue)} .sn.red{color:var(--red)}
+
+/* NAV MENU */
+.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.nav-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 14px;cursor:pointer;transition:all .2s;text-align:center;position:relative;overflow:hidden}
+.nav-card:active{transform:scale(.97);border-color:var(--gold)}
+.nav-card .nc-icon{font-size:30px;margin-bottom:8px}
+.nav-card .nc-title{font-size:15px;font-weight:700;color:var(--text)}
+.nav-card .nc-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.nav-card .nc-badge{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.nav-card.primary{background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(139,105,20,.08));border-color:var(--border2)}
+
+/* UPCOMING */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.section-hdr h3{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:1px}
+.section-hdr a{font-size:12px;color:var(--gold);cursor:pointer}
+.upcoming-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer}
+.upcoming-card:active{background:var(--panel2)}
+.uc-time{min-width:42px;text-align:center}
+.uc-time .t{font-size:14px;font-weight:800;color:var(--gold)}
+.uc-time .d{font-size:10px;color:var(--muted)}
+.uc-divider{width:1px;height:36px;background:var(--border2);flex-shrink:0}
+.uc-info .name{font-size:14px;font-weight:700}
+.uc-info .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.uc-status{margin-right:auto;flex-shrink:0}
+
+/* BADGES */
+.badge{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:700;white-space:nowrap}
+.b-pending{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--border)}
+.b-confirmed{background:rgba(61,184,122,.15);color:var(--green);border:1px solid rgba(61,184,122,.3)}
+.b-done{background:rgba(107,99,85,.15);color:var(--muted);border:1px solid rgba(107,99,85,.3)}
+.b-cancelled{background:rgba(201,80,76,.15);color:var(--red);border:1px solid rgba(201,80,76,.3)}
+.b-active{background:rgba(76,126,201,.15);color:var(--blue);border:1px solid rgba(76,126,201,.3)}
+.b-closed{background:rgba(107,99,85,.15);color:var(--muted);border:1px solid rgba(107,99,85,.3)}
+.b-civil{background:rgba(76,126,201,.15);color:#7AADE8}
+.b-criminal{background:rgba(201,80,76,.15);color:#E88A8A}
+.b-commercial{background:rgba(201,168,76,.12);color:var(--gold)}
+.b-family{background:rgba(61,184,122,.12);color:#7AE8AA}
+.b-labor{background:rgba(139,92,246,.12);color:#B07AE8}
+
+/* BOTTOM NAV */
+.bnav{display:flex;background:var(--panel);border-top:1px solid var(--border);padding-bottom:var(--safe-bot);flex-shrink:0}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 8px;cursor:pointer;color:var(--muted);font-size:10px;gap:3px;background:none;border:none;font-family:'Tajawal',sans-serif;transition:color .2s}
+.bnav-btn .ni{font-size:22px}
+.bnav-btn.active{color:var(--gold)}
+
+/* FORM */
+.form-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.form-body::-webkit-scrollbar{display:none}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:15px;outline:none;direction:rtl;-webkit-appearance:none;transition:border-color .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field textarea{resize:none;height:80px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-save{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),#8B6914);border:none;border-radius:12px;color:#0A0E17;font-family:'Tajawal',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin-top:4px}
+.btn-save:active{opacity:.85}
+.btn-danger{width:100%;padding:12px;background:rgba(201,80,76,.1);border:1px solid rgba(201,80,76,.3);border-radius:12px;color:var(--red);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px}
+
+/* LIST ITEMS */
+.list-item{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:9px;cursor:pointer;transition:border-color .2s;position:relative;overflow:hidden}
+.list-item:active{border-color:var(--gold)}
+.list-item .li-accent{position:absolute;right:0;top:0;bottom:0;width:3px}
+.li-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.li-name{font-family:'Amiri',serif;font-size:17px;font-weight:700;flex:1}
+.li-meta{display:flex;gap:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.li-meta span{display:flex;align-items:center;gap:4px}
+.li-note{font-size:12px;color:var(--muted);margin-top:6px;border-top:1px solid var(--border);padding-top:6px}
+.li-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+
+/* DETAIL */
+.detail-section{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.detail-section h4{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:12px}
+.detail-row{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.detail-row:last-child{border-bottom:none;padding-bottom:0}
+.dr-label{font-size:12px;color:var(--muted);flex-shrink:0}
+.dr-value{font-size:14px;font-weight:600;text-align:left;word-break:break-word;max-width:65%}
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.act-btn{padding:11px;border:1px solid var(--border);border-radius:11px;background:var(--panel);color:var(--text);font-family:'Tajawal',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-align:center}
+.act-btn:active{background:var(--panel2)}
+.act-btn.gold{background:rgba(201,168,76,.12);border-color:var(--border2);color:var(--gold)}
+.act-btn.red{background:rgba(201,80,76,.1);border-color:rgba(201,80,76,.3);color:var(--red)}
+
+/* FILTER CHIPS */
+.chips{display:flex;gap:7px;overflow-x:auto;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;background:var(--panel2);border:1px solid var(--border);border-radius:20px;padding:6px 13px;font-size:12px;color:var(--muted);font-family:'Tajawal',sans-serif;cursor:pointer;white-space:nowrap;transition:all .2s}
+.chip.active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold)}
+.search-wrap{padding:10px 16px;flex-shrink:0}
+.search-inp{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:14px;outline:none;direction:rtl}
+
+/* FINANCE */
+.fin-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.fin-box{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.fin-box .fn{font-size:18px;font-weight:800;line-height:1}
+.fin-box .fl{font-size:10px;color:var(--muted);margin-top:4px}
+.fn.green{color:var(--green)} .fn.red{color:var(--red)} .fn.gold{color:var(--gold)}
+
+/* ALERTS */
+.alert-item{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+.alert-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.alert-info .at{font-size:14px;font-weight:600}
+.alert-info .as{font-size:12px;color:var(--muted);margin-top:3px}
+.alert-item.urgent{border-color:rgba(201,80,76,.3)}
+.alert-item.warn{border-color:var(--border2)}
+
+/* SELECT STATUS */
+.status-sel{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--text);font-family:'Tajawal',sans-serif;outline:none;direction:rtl;-webkit-appearance:none}
+
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty .ei{font-size:44px;margin-bottom:12px}
+.empty p{font-size:14px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--safe-bot) + 75px);left:50%;transform:translateX(-50%) translateY(30px);background:var(--panel2);border:1px solid var(--gold);border-radius:10px;padding:11px 22px;font-size:13px;color:var(--gold);z-index:9999;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:flex-end}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--panel);border-radius:20px 20px 0 0;padding:20px 18px calc(var(--safe-bot) + 20px);width:100%;max-height:80vh;overflow-y:auto;animation:slideUp .3s ease}
+.modal-box h3{font-family:'Amiri',serif;font-size:20px;color:var(--gold2);margin-bottom:16px}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeIn .25s ease}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:12px 0}
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="screen home-screen active" id="s-home">
+  <div class="home-hdr">
+    <div class="office-brand">
+      <div class="brand-icon">⚖️</div>
+      <div>
+        <div class="brand-name">مكتب المحاماة</div>
+        <div class="brand-sub">النظام الاحترافي الشامل</div>
+      </div>
+      <div class="date-badge">
+        <div class="dn" id="h-date">--</div>
+        <div class="dd" id="h-day">--</div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="sn gold" id="st-clients">0</div><div class="sl">عميل</div></div>
+      <div class="stat-card"><div class="sn blue" id="st-cases">0</div><div class="sl">قضية</div></div>
+      <div class="stat-card"><div class="sn green" id="st-today">0</div><div class="sl">موعد اليوم</div></div>
+      <div class="stat-card"><div class="sn red" id="st-alerts">0</div><div class="sl">تنبيه</div></div>
+    </div>
+  </div>
+  <div class="scroll">
+    <div class="nav-grid">
+      <div class="nav-card primary" onclick="go('s-clients')">
+        <div class="nc-icon">👤</div>
+        <div class="nc-title">العملاء</div>
+        <div class="nc-sub">إدارة ملفات العملاء</div>
+      </div>
+      <div class="nav-card primary" onclick="go('s-cases')">
+        <div class="nc-icon">📁</div>
+        <div class="nc-title">القضايا</div>
+        <div class="nc-sub">متابعة القضايا</div>
+      </div>
+      <div class="nav-card" onclick="go('s-appts')">
+        <div class="nc-icon">📅</div>
+        <div class="nc-title">المواعيد</div>
+        <div class="nc-sub">الجلسات والاجتماعات</div>
+        <div class="nc-badge" id="badge-appts" style="display:none">0</div>
+      </div>
+      <div class="nav-card" onclick="go('s-finance')">
+        <div class="nc-icon">💰</div>
+        <div class="nc-title">المالية</div>
+        <div class="nc-sub">الأتعاب والفواتير</div>
+      </div>
+      <div class="nav-card" onclick="go('s-docs')">
+        <div class="nc-icon">📄</div>
+        <div class="nc-title">المستندات</div>
+        <div class="nc-sub">العقود والوثائق</div>
+      </div>
+      <div class="nav-card" onclick="go('s-alerts')">
+        <div class="nc-icon">🔔</div>
+        <div class="nc-title">التنبيهات</div>
+        <div class="nc-sub">المواعيد والمهام</div>
+        <div class="nc-badge" id="badge-alerts" style="display:none">0</div>
+      </div>
+    </div>
+    <div class="section-hdr">
+      <h3>▸ مواعيد اليوم</h3>
+      <a onclick="go('s-appts')">عرض الكل</a>
+    </div>
+    <div id="home-appts"></div>
+    <div style="height:10px"></div>
+  </div>
+  <div class="bnav">
+    <button class="bnav-btn active" onclick="go('s-home')"><span class="ni">🏠</span>الرئيسية</button>
+    <button class="bnav-btn" onclick="go('s-clients')"><span class="ni">👤</span>العملاء</button>
+    <button class="bnav-btn" onclick="go('s-appts')"><span class="ni">📅</span>المواعيد</button>
+    <button class="bnav-btn" onclick="go('s-finance')"><span class="ni">💰</span>المالية</button>
+    <button class="bnav-btn" onclick="go('s-alerts')"><span class="ni">🔔</span>تنبيهات</button>
+  </div>
+</div>
+
+<!-- ══════════ CLIENTS LIST ══════════ -->
+<div class="screen" id="s-clients">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-home')">◀</div>
+    <div class="tb-title"><h1>العملاء</h1><p id="clients-count"></p></div>
+    <button class="tb-action" onclick="openAddClient()">+ إضافة</button>
+  </div>
+  <div class="search-wrap"><input class="search-inp" type="text" id="clients-search" placeholder="🔍 ابحث عن عميل..." oninput="renderClients()"></div>
+  <div class="scroll" id="clients-list"></div>
+</div>
+
+<!-- ══════════ CLIENT DETAIL ══════════ -->
+<div class="screen" id="s-client-detail">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-clients')">◀</div>
+    <div class="tb-title"><h1 id="cd-name">العميل</h1><p id="cd-sub"></p></div>
+    <button class="tb-action" onclick="editClient()">تعديل</button>
+  </div>
+  <div class="scroll" id="client-detail-body"></div>
+</div>
+
+<!-- ══════════ ADD/EDIT CLIENT ══════════ -->
+<div class="screen" id="s-client-form">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-clients')">◀</div>
+    <div class="tb-title"><h1 id="cf-title">عميل جديد</h1></div>
+  </div>
+  <div class="form-body">
+    <input type="hidden" id="cf-id">
+    <div class="field"><label>الاسم الكامل *</label><input type="text" id="cf-name" placeholder="مثال: محمد بن عبدالله العمري"></div>
+    <div class="field-row">
+      <div class="field"><label>رقم الهوية</label><input type="text" id="cf-id-num" placeholder="1xxxxxxxxx"></div>
+      <div class="field"><label>الجنسية</label><input type="text" id="cf-nationality" placeholder="سعودي"></div>
+    </div>
+    <div class="field"><label>رقم الجوال *</label><input type="tel" id="cf-phone" placeholder="05xxxxxxxx"></div>
+    <div class="field"><label>البريد الإلكتروني</label><input type="email" id="cf-email" placeholder="email@example.com"></div>
+    <div class="field"><label>العنوان</label><input type="text" id="cf-address" placeholder="المدينة، الحي"></div>
+    <div class="field"><label>ملاحظات</label><textarea id="cf-note" placeholder="أي معلومات إضافية..."></textarea></div>
+    <button class="btn-save" onclick="saveClient()">حفظ العميل</button>
+    <button class="btn-danger" id="cf-delete" onclick="deleteClient()" style="display:none">حذف العميل</button>
+  </div>
+</div>
+
+<!-- ══════════ CASES LIST ══════════ -->
+<div class="screen" id="s-cases">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-home')">◀</div>
+    <div class="tb-title"><h1>القضايا</h1><p id="cases-count"></p></div>
+    <button class="tb-action" onclick="openAddCase()">+ إضافة</button>
+  </div>
+  <div class="chips" id="cases-chips">
+    <button class="chip active" onclick="setCaseFilter('all',this)">الكل</button>
+    <button class="chip" onclick="setCaseFilter('active',this)">🔵 نشطة</button>
+    <button class="chip" onclick="setCaseFilter('pending',this)">⏳ بانتظار</button>
+    <button class="chip" onclick="setCaseFilter('closed',this)">✅ منتهية</button>
+  </div>
+  <div class="search-wrap"><input class="search-inp" type="text" id="cases-search" placeholder="🔍 ابحث عن قضية أو عميل..." oninput="renderCases()"></div>
+  <div class="scroll" id="cases-list"></div>
+</div>
+
+<!-- ══════════ CASE DETAIL ══════════ -->
+<div class="screen" id="s-case-detail">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-cases')">◀</div>
+    <div class="tb-title"><h1 id="csd-title">القضية</h1><p id="csd-sub"></p></div>
+    <button class="tb-action" onclick="editCase()">تعديل</button>
+  </div>
+  <div class="scroll" id="case-detail-body"></div>
+</div>
+
+<!-- ══════════ ADD/EDIT CASE ══════════ -->
+<div class="screen" id="s-case-form">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-cases')">◀</div>
+    <div class="tb-title"><h1 id="csf-title">قضية جديدة</h1></div>
+  </div>
+  <div class="form-body">
+    <input type="hidden" id="csf-id">
+    <div class="field"><label>رقم القضية</label><input type="text" id="csf-num" placeholder="مثال: 2024/1234"></div>
+    <div class="field"><label>عنوان القضية *</label><input type="text" id="csf-title-inp" placeholder="وصف مختصر للقضية"></div>
+    <div class="field"><label>العميل *</label><select id="csf-client"><option value="">-- اختر العميل --</option></select></div>
+    <div class="field-row">
+      <div class="field"><label>نوع القضية</label>
+        <select id="csf-type">
+          <option value="civil">مدني</option>
+          <option value="criminal">جنائي</option>
+          <option value="commercial">تجاري</option>
+          <option value="family">أسري</option>
+          <option value="labor">عمالي</option>
+        </select>
+      </div>
+      <div class="field"><label>الحالة</label>
+        <select id="csf-status">
+          <option value="active">نشطة</option>
+          <option value="pending">بانتظار</option>
+          <option value="closed">منتهية</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>المحكمة / الجهة</label><input type="text" id="csf-court" placeholder="مثال: المحكمة العامة بالرياض"></div>
+    <div class="field-row">
+      <div class="field"><label>تاريخ الفتح</label><input type="date" id="csf-open-date"></div>
+      <div class="field"><label>الأتعاب المتفق عليها</label><input type="number" id="csf-fee" placeholder="0"></div>
+    </div>
+    <div class="field"><label>ملاحظات وتفاصيل</label><textarea id="csf-note" placeholder="تفاصيل القضية، الوقائع، الطلبات..."></textarea></div>
+    <button class="btn-save" onclick="saveCase()">حفظ القضية</button>
+    <button class="btn-danger" id="csf-delete" onclick="deleteCase()" style="display:none">حذف القضية</button>
+  </div>
+</div>
+
+<!-- ══════════ APPOINTMENTS ══════════ -->
+<div class="screen" id="s-appts">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-home')">◀</div>
+    <div class="tb-title"><h1>المواعيد</h1><p id="appts-count"></p></div>
+    <button class="tb-action" onclick="openAddAppt()">+ إضافة</button>
+  </div>
+  <div class="chips">
+    <button class="chip active" onclick="setApptFilter('all',this)">الكل</button>
+    <button class="chip" onclick="setApptFilter('today',this)">اليوم</button>
+    <button class="chip" onclick="setApptFilter('pending',this)">⏳ بانتظار</button>
+    <button class="chip" onclick="setApptFilter('confirmed',this)">✅ مؤكد</button>
+    <button class="chip" onclick="setApptFilter('done',this)">☑️ منتهي</button>
+    <button class="chip" onclick="setApptFilter('cancelled',this)">❌ ملغي</button>
+  </div>
+  <div class="scroll" id="appts-list"></div>
+</div>
+
+<!-- ══════════ ADD/EDIT APPT ══════════ -->
+<div class="screen" id="s-appt-form">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-appts')">◀</div>
+    <div class="tb-title"><h1 id="af-title">موعد جديد</h1></div>
+  </div>
+  <div class="form-body">
+    <input type="hidden" id="af-id">
+    <div class="field"><label>العنوان / الغرض *</label><input type="text" id="af-title-inp" placeholder="مثال: جلسة محاكمة - استشارة قانونية"></div>
+    <div class="field"><label>العميل</label><select id="af-client"><option value="">-- اختر العميل (اختياري) --</option></select></div>
+    <div class="field"><label>القضية المرتبطة</label><select id="af-case"><option value="">-- اختر القضية (اختياري) --</option></select></div>
+    <div class="field-row">
+      <div class="field"><label>التاريخ *</label><input type="date" id="af-date"></div>
+      <div class="field"><label>الوقت *</label><input type="time" id="af-time"></div>
+    </div>
+    <div class="field"><label>المكان</label><input type="text" id="af-location" placeholder="مثال: قاعة 3، المحكمة العامة"></div>
+    <div class="field"><label>الحالة</label>
+      <select id="af-status">
+        <option value="pending">بانتظار</option>
+        <option value="confirmed">مؤكد</option>
+        <option value="done">منتهي</option>
+        <option value="cancelled">ملغي</option>
+      </select>
+    </div>
+    <div class="field"><label>ملاحظات</label><textarea id="af-note" placeholder="أي تفاصيل إضافية..."></textarea></div>
+    <button class="btn-save" onclick="saveAppt()">حفظ الموعد</button>
+    <button class="btn-danger" id="af-delete" onclick="deleteAppt()" style="display:none">حذف الموعد</button>
+  </div>
+</div>
+
+<!-- ══════════ FINANCE ══════════ -->
+<div class="screen" id="s-finance">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-home')">◀</div>
+    <div class="tb-title"><h1>المالية</h1><p>الأتعاب والمدفوعات</p></div>
+    <button class="tb-action" onclick="openAddTx()">+ إضافة</button>
+  </div>
+  <div class="scroll">
+    <div class="fin-summary">
+      <div class="fin-box"><div class="fn green" id="fin-in">0</div><div class="fl">إجمالي الإيرادات</div></div>
+      <div class="fin-box"><div class="fn red" id="fin-out">0</div><div class="fl">إجمالي المصروفات</div></div>
+      <div class="fin-box"><div class="fn gold" id="fin-net">0</div><div class="fl">الصافي</div></div>
+    </div>
+    <div class="section-label">سجل المعاملات</div>
+    <div id="finance-list"></div>
+  </div>
+</div>
+
+<!-- ══════════ ADD TX ══════════ -->
+<div class="screen" id="s-tx-form">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-finance')">◀</div>
+    <div class="tb-title"><h1 id="tf-title">معاملة جديدة</h1></div>
+  </div>
+  <div class="form-body">
+    <input type="hidden" id="tf-id">
+    <div class="field"><label>النوع *</label>
+      <select id="tf-type">
+        <option value="income">إيراد (دخل)</option>
+        <option value="expense">مصروف</option>
+      </select>
+    </div>
+    <div class="field"><label>الوصف *</label><input type="text" id="tf-desc" placeholder="مثال: أتعاب قضية - دفعة أولى"></div>
+    <div class="field"><label>العميل</label><select id="tf-client"><option value="">-- اختياري --</option></select></div>
+    <div class="field-row">
+      <div class="field"><label>المبلغ (ريال) *</label><input type="number" id="tf-amount" placeholder="0"></div>
+      <div class="field"><label>التاريخ *</label><input type="date" id="tf-date"></div>
+    </div>
+    <div class="field"><label>طريقة الدفع</label>
+      <select id="tf-method">
+        <option value="cash">نقد</option>
+        <option value="transfer">تحويل بنكي</option>
+        <option value="check">شيك</option>
+      </select>
+    </div>
+    <div class="field"><label>ملاحظات</label><textarea id="tf-note" placeholder="أي تفاصيل..."></textarea></div>
+    <button class="btn-save" onclick="saveTx()">حفظ المعاملة</button>
+    <button class="btn-danger" id="tf-delete" onclick="deleteTx()" style="display:none">حذف</button>
+  </div>
+</div>
+
+<!-- ══════════ DOCS ══════════ -->
+<div class="screen" id="s-docs">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-home')">◀</div>
+    <div class="tb-title"><h1>المستندات</h1><p id="docs-count"></p></div>
+    <button class="tb-action" onclick="openAddDoc()">+ إضافة</button>
+  </div>
+  <div class="search-wrap"><input class="search-inp" type="text" id="docs-search" placeholder="🔍 ابحث عن مستند..." oninput="renderDocs()"></div>
+  <div class="scroll" id="docs-list"></div>
+</div>
+
+<!-- ══════════ ADD DOC ══════════ -->
+<div class="screen" id="s-doc-form">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-docs')">◀</div>
+    <div class="tb-title"><h1 id="df-title">مستند جديد</h1></div>
+  </div>
+  <div class="form-body">
+    <input type="hidden" id="df-id">
+    <div class="field"><label>اسم المستند *</label><input type="text" id="df-name" placeholder="مثال: عقد وكالة - محمد العمري"></div>
+    <div class="field"><label>النوع</label>
+      <select id="df-type">
+        <option value="contract">عقد</option>
+        <option value="power">توكيل</option>
+        <option value="letter">مذكرة</option>
+        <option value="judgment">حكم</option>
+        <option value="other">أخرى</option>
+      </select>
+    </div>
+    <div class="field"><label>العميل المرتبط</label><select id="df-client"><option value="">-- اختياري --</option></select></div>
+    <div class="field"><label>القضية المرتبطة</label><select id="df-case"><option value="">-- اختياري --</option></select></div>
+    <div class="field"><label>التاريخ</label><input type="date" id="df-date"></div>
+    <div class="field"><label>محتوى المستند / ملاحظات</label><textarea id="df-content" placeholder="النص أو ملاحظات المستند..." style="height:120px"></textarea></div>
+    <button class="btn-save" onclick="saveDoc()">حفظ المستند</button>
+    <button class="btn-danger" id="df-delete" onclick="deleteDoc()" style="display:none">حذف المستند</button>
+  </div>
+</div>
+
+<!-- ══════════ ALERTS ══════════ -->
+<div class="screen" id="s-alerts">
+  <div class="topbar">
+    <div class="tb-back" onclick="go('s-home')">◀</div>
+    <div class="tb-title"><h1>التنبيهات</h1><p>المواعيد القادمة والمهام</p></div>
+  </div>
+  <div class="scroll" id="alerts-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA LAYER
+// ═══════════════════════════════════════
+const DB = {
+  get: k => JSON.parse(localStorage.getItem('law_'+k)||'[]'),
+  set: (k,v) => localStorage.setItem('law_'+k, JSON.stringify(v))
+};
+
+let clients = DB.get('clients');
+let cases   = DB.get('cases');
+let appts   = DB.get('appts');
+let finance = DB.get('finance');
+let docs    = DB.get('docs');
+
+function saveAll() {
+  DB.set('clients', clients);
+  DB.set('cases', cases);
+  DB.set('appts', appts);
+  DB.set('finance', finance);
+  DB.set('docs', docs);
+}
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+const TYPE_NAMES = {civil:'مدني',criminal:'جنائي',commercial:'تجاري',family:'أسري',labor:'عمالي'};
+const STATUS_NAMES = {pending:'بانتظار',confirmed:'مؤكد',done:'منتهي',cancelled:'ملغي',active:'نشطة',closed:'منتهية'};
+const DOC_TYPES = {contract:'عقد',power:'توكيل',letter:'مذكرة',judgment:'حكم',other:'أخرى'};
+const PAY_METHODS = {cash:'نقد',transfer:'تحويل',check:'شيك'};
+
+function today() { return new Date().toISOString().split('T')[0]; }
+function fmtDate(d) {
+  if(!d) return '—';
+  return new Date(d+'T00:00:00').toLocaleDateString('ar-SA',{weekday:'short',month:'short',day:'numeric'});
+}
+function fmtMoney(n) { return Number(n||0).toLocaleString('ar-SA') + ' ر.س'; }
+function clientName(id) { const c=clients.find(x=>x.id==id); return c?c.name:'—'; }
+function caseName(id) { const c=cases.find(x=>x.id==id); return c?c.title:'—'; }
+function uid() { return Date.now()+''+Math.floor(Math.random()*1000); }
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+let history_stack = [];
+function go(sid) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(sid).classList.add('active');
+  // render on navigate
+  if(sid==='s-home') refreshHome();
+  if(sid==='s-clients') renderClients();
+  if(sid==='s-cases') renderCases();
+  if(sid==='s-appts') renderAppts();
+  if(sid==='s-finance') renderFinance();
+  if(sid==='s-docs') renderDocs();
+  if(sid==='s-alerts') renderAlerts();
+}
+
+// ═══════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════
+function refreshHome() {
+  const now = new Date();
+  document.getElementById('h-date').textContent = now.getDate()+'/'+( now.getMonth()+1)+'/'+now.getFullYear();
+  document.getElementById('h-day').textContent = now.toLocaleDateString('ar-SA',{weekday:'long'});
+  const td = today();
+  const todayAppts = appts.filter(a=>a.date===td&&a.status!=='cancelled');
+  const pendingAlerts = getAlerts().filter(a=>a.urgent);
+  document.getElementById('st-clients').textContent = clients.length;
+  document.getElementById('st-cases').textContent = cases.filter(c=>c.status==='active').length;
+  document.getElementById('st-today').textContent = todayAppts.length;
+  document.getElementById('st-alerts').textContent = pendingAlerts.length;
+  // badges
+  const pa = appts.filter(a=>a.status==='pending').length;
+  const badgeA = document.getElementById('badge-appts');
+  if(pa>0){badgeA.style.display='flex';badgeA.textContent=pa;}else{badgeA.style.display='none';}
+  const pal = pendingAlerts.length;
+  const badgeAl = document.getElementById('badge-alerts');
+  if(pal>0){badgeAl.style.display='flex';badgeAl.textContent=pal;}else{badgeAl.style.display='none';}
+  // today appointments
+  const el = document.getElementById('home-appts');
+  if(!todayAppts.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">لا توجد مواعيد اليوم</div>';return;}
+  el.innerHTML = todayAppts.sort((a,b)=>a.time.localeCompare(b.time)).slice(0,4).map(a=>`
+    <div class="upcoming-card" onclick="openApptDetail('${a.id}')">
+      <div class="uc-time"><div class="t">${a.time}</div><div class="d">اليوم</div></div>
+      <div class="uc-divider"></div>
+      <div class="uc-info">
+        <div class="name">${a.titleText}</div>
+        <div class="sub">${a.clientId?clientName(a.clientId):'—'} ${a.location?'· '+a.location:''}</div>
+      </div>
+      <div class="uc-status"><span class="badge b-${a.status}">${STATUS_NAMES[a.status]}</span></div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// CLIENTS
+// ═══════════════════════════════════════
+function openAddClient() {
+  document.getElementById('cf-id').value='';
+  document.getElementById('cf-title').textContent='عميل جديد';
+  ['cf-name','cf-id-num','cf-nationality','cf-phone','cf-email','cf-address','cf-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cf-delete').style.display='none';
+  go('s-client-form');
+}
+function editClient() {
+  const id = document.getElementById('cf-id').dataset.editing;
+  if(!id) return;
+  const c = clients.find(x=>x.id===id); if(!c) return;
+  document.getElementById('cf-id').value = id;
+  document.getElementById('cf-title').textContent = 'تعديل العميل';
+  document.getElementById('cf-name').value = c.name||'';
+  document.getElementById('cf-id-num').value = c.idNum||'';
+  document.getElementById('cf-nationality').value = c.nationality||'';
+  document.getElementById('cf-phone').value = c.phone||'';
+  document.getElementById('cf-email').value = c.email||'';
+  document.getElementById('cf-address').value = c.address||'';
+  document.getElementById('cf-note').value = c.note||'';
+  document.getElementById('cf-delete').style.display='block';
+  go('s-client-form');
+}
+function saveClient() {
+  const name = document.getElementById('cf-name').value.trim();
+  const phone = document.getElementById('cf-phone').value.trim();
+  if(!name||!phone){toast('⚠️ الاسم والجوال مطلوبان');return;}
+  const id = document.getElementById('cf-id').value || uid();
+  const data = {
+    id, name, phone,
+    idNum: document.getElementById('cf-id-num').value.trim(),
+    nationality: document.getElementById('cf-nationality').value.trim(),
+    email: document.getElementById('cf-email').value.trim(),
+    address: document.getElementById('cf-address').value.trim(),
+    note: document.getElementById('cf-note').value.trim(),
+    createdAt: document.getElementById('cf-id').value ? undefined : today()
+  };
+  const idx = clients.findIndex(x=>x.id===id);
+  if(idx>=0) clients[idx]={...clients[idx],...data};
+  else clients.unshift(data);
+  saveAll(); toast('✅ تم حفظ العميل'); go('s-clients');
+}
+function deleteClient() {
+  const id = document.getElementById('cf-id').value; if(!id) return;
+  if(!confirm('حذف هذا العميل نهائياً؟')) return;
+  clients = clients.filter(x=>x.id!==id);
+  saveAll(); toast('🗑️ تم الحذف'); go('s-clients');
+}
+function renderClients() {
+  const q = (document.getElementById('clients-search')?.value||'').toLowerCase();
+  const list = clients.filter(c=>!q||c.name.toLowerCase().includes(q)||( c.phone&&c.phone.includes(q)));
+  document.getElementById('clients-count').textContent = list.length + ' عميل';
+  const el = document.getElementById('clients-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">👤</div><p>لا يوجد عملاء</p></div>';return;}
+  el.innerHTML = list.map(c=>{
+    const caseCount = cases.filter(x=>x.clientId===c.id).length;
+    return `<div class="list-item anim" onclick="openClientDetail('${c.id}')">
+      <div class="li-head"><span class="li-name">${c.name}</span><span class="badge b-active">${caseCount} قضية</span></div>
+      <div class="li-meta"><span>📱 ${c.phone}</span>${c.nationality?`<span>🌍 ${c.nationality}</span>`:''}</div>
+      ${c.note?`<div class="li-note">📝 ${c.note}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function openClientDetail(id) {
+  const c = clients.find(x=>x.id===id); if(!c) return;
+  document.getElementById('cd-name').textContent = c.name;
+  document.getElementById('cf-id').dataset.editing = id;
+  const clientCases = cases.filter(x=>x.clientId===id);
+  const clientAppts = appts.filter(x=>x.clientId===id);
+  const clientTx = finance.filter(x=>x.clientId===id&&x.txType==='income');
+  const totalPaid = clientTx.reduce((s,x)=>s+Number(x.amount||0),0);
+  document.getElementById('cd-sub').textContent = `${clientCases.length} قضية`;
+  document.getElementById('client-detail-body').innerHTML = `
+    <div class="detail-section">
+      <h4>▸ البيانات الشخصية</h4>
+      <div class="detail-row"><span class="dr-label">الاسم</span><span class="dr-value">${c.name}</span></div>
+      <div class="detail-row"><span class="dr-label">الجوال</span><span class="dr-value">${c.phone||'—'}</span></div>
+      <div class="detail-row"><span class="dr-label">الهوية</span><span class="dr-value">${c.idNum||'—'}</span></div>
+      <div class="detail-row"><span class="dr-label">الجنسية</span><span class="dr-value">${c.nationality||'—'}</span></div>
+      <div class="detail-row"><span class="dr-label">البريد</span><span class="dr-value">${c.email||'—'}</span></div>
+      <div class="detail-row"><span class="dr-label">العنوان</span><span class="dr-value">${c.address||'—'}</span></div>
+      ${c.note?`<div class="detail-row"><span class="dr-label">ملاحظات</span><span class="dr-value">${c.note}</span></div>`:''}
+    </div>
+    <div class="detail-section">
+      <h4>▸ الملخص المالي</h4>
+      <div class="detail-row"><span class="dr-label">إجمالي المدفوع</span><span class="dr-value" style="color:var(--green)">${fmtMoney(totalPaid)}</span></div>
+    </div>
+    <div class="detail-section">
+      <h4>▸ القضايا (${clientCases.length})</h4>
+      ${clientCases.length?clientCases.map(cs=>`
+        <div class="detail-row" onclick="openCaseDetail('${cs.id}')" style="cursor:pointer">
+          <span class="dr-label">${cs.title}</span>
+          <span class="badge b-${cs.status}">${STATUS_NAMES[cs.status]}</span>
+        </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:8px 0">لا توجد قضايا</div>'}
+    </div>
+    <div class="detail-section">
+      <h4>▸ المواعيد (${clientAppts.length})</h4>
+      ${clientAppts.slice(0,3).length?clientAppts.slice(0,3).map(a=>`
+        <div class="detail-row">
+          <span class="dr-label">${a.titleText}</span>
+          <span style="font-size:12px;color:var(--muted)">${fmtDate(a.date)} ${a.time}</span>
+        </div>`).join(''):'<div style="color:var(--muted);font-size:13px;padding:8px 0">لا توجد مواعيد</div>'}
+    </div>
+    <div class="action-row">
+      <button class="act-btn gold" onclick="editClient()">✏️ تعديل</button>
+      <button class="act-btn" onclick="openAddApptForClient('${id}')">📅 موعد جديد</button>
+    </div>`;
+  go('s-client-detail');
+}
+
+// ═══════════════════════════════════════
+// CASES
+// ═══════════════════════════════════════
+let caseFilter = 'all';
+function openAddCase() {
+  document.getElementById('csf-id').value='';
+  document.getElementById('csf-title').textContent='قضية جديدة';
+  ['csf-num','csf-title-inp','csf-court','csf-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('csf-fee').value='';
+  document.getElementById('csf-open-date').value=today();
+  document.getElementById('csf-type').value='civil';
+  document.getElementById('csf-status').value='active';
+  document.getElementById('csf-delete').style.display='none';
+  populateClientSelect('csf-client');
+  go('s-case-form');
+}
+function editCase() {
+  const id = document.getElementById('csf-id').dataset.editing; if(!id) return;
+  const c = cases.find(x=>x.id===id); if(!c) return;
+  document.getElementById('csf-id').value = id;
+  document.getElementById('csf-title').textContent = 'تعديل القضية';
+  document.getElementById('csf-num').value = c.caseNum||'';
+  document.getElementById('csf-title-inp').value = c.title||'';
+  document.getElementById('csf-court').value = c.court||'';
+  document.getElementById('csf-fee').value = c.fee||'';
+  document.getElementById('csf-open-date').value = c.openDate||'';
+  document.getElementById('csf-note').value = c.note||'';
+  document.getElementById('csf-type').value = c.caseType||'civil';
+  document.getElementById('csf-status').value = c.status||'active';
+  document.getElementById('csf-delete').style.display='block';
+  populateClientSelect('csf-client', c.clientId);
+  go('s-case-form');
+}
+function saveCase() {
+  const title = document.getElementById('csf-title-inp').value.trim();
+  const clientId = document.getElementById('csf-client').value;
+  if(!title){toast('⚠️ عنوان القضية مطلوب');return;}
+  const id = document.getElementById('csf-id').value || uid();
+  const data = {
+    id, title, clientId,
+    caseNum: document.getElementById('csf-num').value.trim(),
+    caseType: document.getElementById('csf-type').value,
+    status: document.getElementById('csf-status').value,
+    court: document.getElementById('csf-court').value.trim(),
+    fee: document.getElementById('csf-fee').value,
+    openDate: document.getElementById('csf-open-date').value,
+    note: document.getElementById('csf-note').value.trim(),
+  };
+  const idx = cases.findIndex(x=>x.id===id);
+  if(idx>=0) cases[idx]={...cases[idx],...data};
+  else cases.unshift(data);
+  saveAll(); toast('✅ تم حفظ القضية'); go('s-cases');
+}
+function deleteCase() {
+  const id = document.getElementById('csf-id').value; if(!id) return;
+  if(!confirm('حذف هذه القضية؟')) return;
+  cases = cases.filter(x=>x.id!==id);
+  saveAll(); toast('🗑️ تم الحذف'); go('s-cases');
+}
+function setCaseFilter(f, btn) {
+  caseFilter = f;
+  document.querySelectorAll('#cases-chips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderCases();
+}
+function renderCases() {
+  const q = (document.getElementById('cases-search')?.value||'').toLowerCase();
+  let list = cases.filter(c=>{
+    if(caseFilter!=='all'&&c.status!==caseFilter) return false;
+    if(q&&!c.title.toLowerCase().includes(q)&&!clientName(c.clientId).includes(q)) return false;
+    return true;
+  });
+  document.getElementById('cases-count').textContent = list.length + ' قضية';
+  const el = document.getElementById('cases-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">📁</div><p>لا توجد قضايا</p></div>';return;}
+  el.innerHTML = list.map(c=>`
+    <div class="list-item anim" onclick="openCaseDetail('${c.id}')">
+      <div class="li-accent" style="background:${c.status==='active'?'var(--blue)':c.status==='pending'?'var(--gold)':'var(--muted)'}"></div>
+      <div class="li-head">
+        <span class="li-name">${c.title}</span>
+        <span class="badge b-${c.status}">${STATUS_NAMES[c.status]}</span>
+      </div>
+      <div class="li-meta">
+        <span>👤 ${clientName(c.clientId)}</span>
+        <span class="badge b-${c.caseType}" style="font-size:10px">${TYPE_NAMES[c.caseType]||'—'}</span>
+        ${c.court?`<span>🏛️ ${c.court}</span>`:''}
+      </div>
+      ${c.fee?`<div class="li-note">💰 الأتعاب: ${fmtMoney(c.fee)}</div>`:''}
+    </div>`).join('');
+}
+function openCaseDetail(id) {
+  const c = cases.find(x=>x.id===id); if(!c) return;
+  document.getElementById('csd-title').textContent = c.title;
+  document.getElementById('csf-id').dataset.editing = id;
+  document.getElementById('csd-sub').textContent = clientName(c.clientId);
+  document.getElementById('case-detail-body').innerHTML = `
+    <div class="detail-section">
+      <h4>▸ تفاصيل القضية</h4>
+      <div class="detail-row"><span class="dr-label">رقم القضية</span><span class="dr-value">${c.caseNum||'—'}</span></div>
+      <div class="detail-row"><span class="dr-label">العميل</span><span class="dr-value">${clientName(c.clientId)}</span></div>
+      <div class="detail-row"><span class="dr-label">النوع</span><span class="dr-value">${TYPE_NAMES[c.caseType]||'—'}</span></div>
+      <div class="detail-row"><span class="dr-label">الحالة</span><span class="dr-value"><span class="badge b-${c.status}">${STATUS_NAMES[c.status]}</span></span></div>
+      <div class="detail-row"><span class="dr-label">المحكمة</span><span class="dr-value">${c.court||'—'}</span></div>
+      <div class="detail-row"><span class="dr-label">تاريخ الفتح</span><span class="dr-value">${fmtDate(c.openDate)}</span></div>
+      <div class="detail-row"><span class="dr-label">الأتعاب</span><span class="dr-value" style="color:var(--green)">${c.fee?fmtMoney(c.fee):'—'}</span></div>
+      ${c.note?`<div class="detail-row"><span class="dr-label">ملاحظات</span><span class="dr-value">${c.note}</span></div>`:''}
+    </div>
+    <div class="action-row">
+      <button class="act-btn gold" onclick="editCase()">✏️ تعديل</button>
+      <button class="act-btn" onclick="openAddApptForCase('${id}')">📅 موعد جديد</button>
+    </div>`;
+  go('s-case-detail');
+}
+
+// ═══════════════════════════════════════
+// APPOINTMENTS
+// ═══════════════════════════════════════
+let apptFilter = 'all';
+function openAddAppt() {
+  document.getElementById('af-id').value='';
+  document.getElementById('af-title').textContent='موعد جديد';
+  ['af-title-inp','af-location','af-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('af-date').value=today();
+  document.getElementById('af-time').value='';
+  document.getElementById('af-status').value='pending';
+  document.getElementById('af-delete').style.display='none';
+  populateClientSelect('af-client');
+  populateCaseSelect('af-case');
+  go('s-appt-form');
+}
+function openAddApptForClient(clientId) {
+  openAddAppt();
+  document.getElementById('af-client').value = clientId;
+}
+function openAddApptForCase(caseId) {
+  openAddAppt();
+  document.getElementById('af-case').value = caseId;
+}
+function openApptDetail(id) {
+  const a = appts.find(x=>x.id===id); if(!a) return;
+  document.getElementById('af-id').value = id;
+  document.getElementById('af-title').textContent = 'تعديل الموعد';
+  document.getElementById('af-title-inp').value = a.titleText||'';
+  document.getElementById('af-date').value = a.date||'';
+  document.getElementById('af-time').value = a.time||'';
+  document.getElementById('af-location').value = a.location||'';
+  document.getElementById('af-note').value = a.note||'';
+  document.getElementById('af-status').value = a.status||'pending';
+  document.getElementById('af-delete').style.display='block';
+  populateClientSelect('af-client', a.clientId);
+  populateCaseSelect('af-case', a.caseId);
+  go('s-appt-form');
+}
+function saveAppt() {
+  const t = document.getElementById('af-title-inp').value.trim();
+  const d = document.getElementById('af-date').value;
+  const ti = document.getElementById('af-time').value;
+  if(!t||!d||!ti){toast('⚠️ العنوان والتاريخ والوقت مطلوبة');return;}
+  const id = document.getElementById('af-id').value || uid();
+  const data = {
+    id, titleText:t, date:d, time:ti,
+    clientId: document.getElementById('af-client').value,
+    caseId: document.getElementById('af-case').value,
+    location: document.getElementById('af-location').value.trim(),
+    status: document.getElementById('af-status').value,
+    note: document.getElementById('af-note').value.trim(),
+  };
+  const idx = appts.findIndex(x=>x.id===id);
+  if(idx>=0) appts[idx]={...appts[idx],...data};
+  else appts.unshift(data);
+  saveAll(); toast('✅ تم حفظ الموعد'); go('s-appts');
+}
+function deleteAppt() {
+  const id = document.getElementById('af-id').value; if(!id) return;
+  if(!confirm('حذف هذا الموعد؟')) return;
+  appts = appts.filter(x=>x.id!==id);
+  saveAll(); toast('🗑️ تم الحذف'); go('s-appts');
+}
+function setApptFilter(f, btn) {
+  apptFilter = f;
+  document.querySelectorAll('#s-appts .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderAppts();
+}
+function renderAppts() {
+  const td = today();
+  let list = appts.filter(a=>{
+    if(apptFilter==='all') return true;
+    if(apptFilter==='today') return a.date===td;
+    return a.status===apptFilter;
+  }).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+  document.getElementById('appts-count').textContent = list.length + ' موعد';
+  const el = document.getElementById('appts-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">📅</div><p>لا توجد مواعيد</p></div>';return;}
+  el.innerHTML = list.map(a=>`
+    <div class="list-item anim" onclick="openApptDetail('${a.id}')">
+      <div class="li-accent" style="background:${a.status==='confirmed'?'var(--green)':a.status==='cancelled'?'var(--red)':a.status==='done'?'var(--muted)':'var(--gold)'}"></div>
+      <div class="li-head">
+        <span class="li-name" style="font-size:15px">${a.titleText}</span>
+        <span class="badge b-${a.status}">${STATUS_NAMES[a.status]}</span>
+      </div>
+      <div class="li-meta">
+        <span>📅 ${fmtDate(a.date)}</span>
+        <span>🕐 ${a.time}</span>
+        ${a.clientId?`<span>👤 ${clientName(a.clientId)}</span>`:''}
+        ${a.location?`<span>📍 ${a.location}</span>`:''}
+      </div>
+      ${a.note?`<div class="li-note">📝 ${a.note}</div>`:''}
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// FINANCE
+// ═══════════════════════════════════════
+function openAddTx() {
+  document.getElementById('tf-id').value='';
+  document.getElementById('tf-title').textContent='معاملة جديدة';
+  ['tf-desc','tf-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('tf-amount').value='';
+  document.getElementById('tf-date').value=today();
+  document.getElementById('tf-type').value='income';
+  document.getElementById('tf-method').value='cash';
+  document.getElementById('tf-delete').style.display='none';
+  populateClientSelect('tf-client');
+  go('s-tx-form');
+}
+function saveTx() {
+  const desc = document.getElementById('tf-desc').value.trim();
+  const amount = document.getElementById('tf-amount').value;
+  const date = document.getElementById('tf-date').value;
+  if(!desc||!amount||!date){toast('⚠️ الوصف والمبلغ والتاريخ مطلوبة');return;}
+  const id = document.getElementById('tf-id').value || uid();
+  const data = {
+    id, desc, amount:Number(amount), date,
+    txType: document.getElementById('tf-type').value,
+    clientId: document.getElementById('tf-client').value,
+    method: document.getElementById('tf-method').value,
+    note: document.getElementById('tf-note').value.trim(),
+  };
+  const idx = finance.findIndex(x=>x.id===id);
+  if(idx>=0) finance[idx]={...finance[idx],...data};
+  else finance.unshift(data);
+  saveAll(); toast('✅ تم الحفظ'); go('s-finance');
+}
+function deleteTx() {
+  const id = document.getElementById('tf-id').value; if(!id) return;
+  if(!confirm('حذف هذه المعاملة؟')) return;
+  finance = finance.filter(x=>x.id!==id);
+  saveAll(); toast('🗑️ تم الحذف'); go('s-finance');
+}
+function renderFinance() {
+  const inc = finance.filter(x=>x.txType==='income').reduce((s,x)=>s+x.amount,0);
+  const exp = finance.filter(x=>x.txType==='expense').reduce((s,x)=>s+x.amount,0);
+  document.getElementById('fin-in').textContent = inc.toLocaleString('ar-SA');
+  document.getElementById('fin-out').textContent = exp.toLocaleString('ar-SA');
+  document.getElementById('fin-net').textContent = (inc-exp).toLocaleString('ar-SA');
+  const el = document.getElementById('finance-list');
+  if(!finance.length){el.innerHTML='<div class="empty"><div class="ei">💰</div><p>لا توجد معاملات</p></div>';return;}
+  el.innerHTML = finance.sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`
+    <div class="list-item anim" onclick="openEditTx('${t.id}')">
+      <div class="li-accent" style="background:${t.txType==='income'?'var(--green)':'var(--red)'}"></div>
+      <div class="li-head">
+        <span class="li-name" style="font-size:15px">${t.desc}</span>
+        <span style="font-size:15px;font-weight:800;color:${t.txType==='income'?'var(--green)':'var(--red)'}">${t.txType==='income'?'+':'−'}${t.amount.toLocaleString()}</span>
+      </div>
+      <div class="li-meta">
+        <span>📅 ${fmtDate(t.date)}</span>
+        ${t.clientId?`<span>👤 ${clientName(t.clientId)}</span>`:''}
+        <span>${PAY_METHODS[t.method]||''}</span>
+      </div>
+      ${t.note?`<div class="li-note">📝 ${t.note}</div>`:''}
+    </div>`).join('');
+}
+function openEditTx(id) {
+  const t = finance.find(x=>x.id===id); if(!t) return;
+  document.getElementById('tf-id').value = id;
+  document.getElementById('tf-title').textContent = 'تعديل المعاملة';
+  document.getElementById('tf-desc').value = t.desc||'';
+  document.getElementById('tf-amount').value = t.amount||'';
+  document.getElementById('tf-date').value = t.date||'';
+  document.getElementById('tf-type').value = t.txType||'income';
+  document.getElementById('tf-method').value = t.method||'cash';
+  document.getElementById('tf-note').value = t.note||'';
+  document.getElementById('tf-delete').style.display='block';
+  populateClientSelect('tf-client', t.clientId);
+  go('s-tx-form');
+}
+
+// ═══════════════════════════════════════
+// DOCUMENTS
+// ═══════════════════════════════════════
+function openAddDoc() {
+  document.getElementById('df-id').value='';
+  document.getElementById('df-title').textContent='مستند جديد';
+  ['df-name','df-content'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('df-date').value=today();
+  document.getElementById('df-type').value='contract';
+  document.getElementById('df-delete').style.display='none';
+  populateClientSelect('df-client');
+  populateCaseSelect('df-case');
+  go('s-doc-form');
+}
+function saveDoc() {
+  const name = document.getElementById('df-name').value.trim();
+  if(!name){toast('⚠️ اسم المستند مطلوب');return;}
+  const id = document.getElementById('df-id').value || uid();
+  const data = {
+    id, name,
+    docType: document.getElementById('df-type').value,
+    clientId: document.getElementById('df-client').value,
+    caseId: document.getElementById('df-case').value,
+    date: document.getElementById('df-date').value,
+    content: document.getElementById('df-content').value.trim(),
+  };
+  const idx = docs.findIndex(x=>x.id===id);
+  if(idx>=0) docs[idx]={...docs[idx],...data};
+  else docs.unshift(data);
+  saveAll(); toast('✅ تم حفظ المستند'); go('s-docs');
+}
+function deleteDoc() {
+  const id = document.getElementById('df-id').value; if(!id) return;
+  if(!confirm('حذف هذا المستند؟')) return;
+  docs = docs.filter(x=>x.id!==id);
+  saveAll(); toast('🗑️ تم الحذف'); go('s-docs');
+}
+function renderDocs() {
+  const q = (document.getElementById('docs-search')?.value||'').toLowerCase();
+  const list = docs.filter(d=>!q||d.name.toLowerCase().includes(q));
+  document.getElementById('docs-count').textContent = list.length + ' مستند';
+  const el = document.getElementById('docs-list');
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">📄</div><p>لا توجد مستندات</p></div>';return;}
+  el.innerHTML = list.map(d=>`
+    <div class="list-item anim" onclick="openEditDoc('${d.id}')">
+      <div class="li-head">
+        <span class="li-name" style="font-size:15px">${d.name}</span>
+        <span class="badge b-active">${DOC_TYPES[d.docType]||'—'}</span>
+      </div>
+      <div class="li-meta">
+        <span>📅 ${fmtDate(d.date)}</span>
+        ${d.clientId?`<span>👤 ${clientName(d.clientId)}</span>`:''}
+        ${d.caseId?`<span>📁 ${caseName(d.caseId)}</span>`:''}
+      </div>
+      ${d.content?`<div class="li-note">📝 ${d.content.slice(0,80)}${d.content.length>80?'...':''}</div>`:''}
+    </div>`).join('');
+}
+function openEditDoc(id) {
+  const d = docs.find(x=>x.id===id); if(!d) return;
+  document.getElementById('df-id').value = id;
+  document.getElementById('df-title').textContent = 'تعديل المستند';
+  document.getElementById('df-name').value = d.name||'';
+  document.getElementById('df-type').value = d.docType||'contract';
+  document.getElementById('df-date').value = d.date||'';
+  document.getElementById('df-content').value = d.content||'';
+  document.getElementById('df-delete').style.display='block';
+  populateClientSelect('df-client', d.clientId);
+  populateCaseSelect('df-case', d.caseId);
+  go('s-doc-form');
+}
+
+// ═══════════════════════════════════════
+// ALERTS
+// ═══════════════════════════════════════
+function getAlerts() {
+  const td = today();
+  const tomorrow = new Date(Date.now()+86400000).toISOString().split('T')[0];
+  const alerts = [];
+  appts.filter(a=>a.status!=='cancelled'&&a.status!=='done').forEach(a=>{
+    if(a.date===td) alerts.push({text:`موعد اليوم: ${a.titleText}`,sub:`${a.time} ${a.location?'· '+a.location:''}`,urgent:true,color:'var(--gold)'});
+    else if(a.date===tomorrow) alerts.push({text:`موعد الغد: ${a.titleText}`,sub:`${a.time} ${a.location?'· '+a.location:''}`,urgent:false,color:'var(--blue)'});
+    else if(a.date<td) alerts.push({text:`موعد فائت: ${a.titleText}`,sub:fmtDate(a.date)+' '+a.time,urgent:true,color:'var(--red)'});
+  });
+  cases.filter(c=>c.status==='active').forEach(c=>{
+    if(!c.note) return;
+  });
+  return alerts;
+}
+function renderAlerts() {
+  const alerts = getAlerts();
+  const el = document.getElementById('alerts-list');
+  if(!alerts.length){el.innerHTML='<div class="empty"><div class="ei">✅</div><p>لا توجد تنبيهات</p></div>';return;}
+  el.innerHTML = alerts.map(a=>`
+    <div class="alert-item ${a.urgent?'urgent':'warn'} anim">
+      <div class="alert-dot" style="background:${a.color}"></div>
+      <div class="alert-info">
+        <div class="at">${a.text}</div>
+        <div class="as">${a.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════
+function populateClientSelect(selId, selectedId='') {
+  const sel = document.getElementById(selId);
+  sel.innerHTML = '<option value="">-- اختر العميل --</option>' +
+    clients.map(c=>`<option value="${c.id}" ${c.id===selectedId?'selected':''}>${c.name}</option>`).join('');
+}
+function populateCaseSelect(selId, selectedId='') {
+  const sel = document.getElementById(selId);
+  sel.innerHTML = '<option value="">-- اختر القضية --</option>' +
+    cases.map(c=>`<option value="${c.id}" ${c.id===selectedId?'selected':''}>${c.title}</option>`).join('');
+}
+function toast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ═══════════════════════════════════════
+// SAMPLE DATA
+// ═══════════════════════════════════════
+if(!clients.length) {
+  const td = today();
+  const c1=uid(), c2=uid(), c3=uid();
+  const cs1=uid(), cs2=uid();
+  clients=[
+    {id:c1,name:'أحمد بن سعد العتيبي',phone:'0501234567',idNum:'1012345678',nationality:'سعودي',email:'ahmed@email.com',address:'الرياض، العليا',note:'عميل قديم',createdAt:td},
+    {id:c2,name:'سارة محمد الزهراني',phone:'0557654321',idNum:'',nationality:'سعودية',email:'',address:'جدة',note:'',createdAt:td},
+    {id:c3,name:'شركة الأفق للتجارة',phone:'0112345678',idNum:'',nationality:'',email:'info@ufq.sa',address:'الرياض، العليا',note:'شركة تجارية',createdAt:td},
+  ];
+  cases=[
+    {id:cs1,title:'قضية ملكية عقارية',clientId:c1,caseNum:'2024/1234',caseType:'civil',status:'active',court:'المحكمة العامة بالرياض',fee:15000,openDate:td,note:'نزاع على ملكية شقة في حي النزهة'},
+    {id:cs2,title:'نزاع تجاري مع مورد',clientId:c3,caseNum:'2024/5678',caseType:'commercial',status:'pending',court:'المحكمة التجارية',fee:25000,openDate:td,note:''},
+  ];
+  appts=[
+    {id:uid(),titleText:'جلسة محاكمة - قضية العتيبي',clientId:c1,caseId:cs1,date:td,time:'10:00',location:'المحكمة العامة - قاعة 3',status:'confirmed',note:'إحضار جميع المستندات'},
+    {id:uid(),titleText:'استشارة قانونية',clientId:c2,date:td,time:'14:30',location:'المكتب',status:'pending',note:''},
+    {id:uid(),titleText:'جلسة التحكيم',clientId:c3,caseId:cs2,date:new Date(Date.now()+86400000).toISOString().split('T')[0],time:'09:00',location:'غرفة التجارة',status:'pending',note:''},
+  ];
+  finance=[
+    {id:uid(),desc:'أتعاب قضية العتيبي - دفعة أولى',clientId:c1,txType:'income',amount:8000,date:td,method:'transfer',note:''},
+    {id:uid(),desc:'رسوم محكمة',clientId:c1,txType:'expense',amount:500,date:td,method:'cash',note:''},
+    {id:uid(),desc:'أتعاب مبدئية - شركة الأفق',clientId:c3,txType:'income',amount:5000,date:td,method:'check',note:''},
+  ];
+  docs=[
+    {id:uid(),name:'توكيل رسمي - أحمد العتيبي',docType:'power',clientId:c1,caseId:cs1,date:td,content:'توكيل رسمي بالدفاع والتمثيل في قضية الملكية العقارية'},
+  ];
+  saveAll();
+}
+
+// PWA
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+// INIT
+refreshHome();
+</script>
+</body>
+</html>
